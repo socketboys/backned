@@ -4,9 +4,9 @@
 // versions:
 // - protoc-gen-go-grpc v1.3.0
 // - protoc             v3.21.12
-// source: proto/pipeline.proto
+// source: internal/gRPC/proto/pipeline.proto
 
-package pipeline
+package gRPC
 
 import (
 	context "context"
@@ -203,5 +203,5 @@ var Pipeline_ServiceDesc = grpc.ServiceDesc{
 			ClientStreams: true,
 		},
 	},
-	Metadata: "proto/pipeline.proto",
+	Metadata: "internal/gRPC/proto/pipeline.proto",
 }

@@ -1,9 +1,7 @@
 #DEV
-build-dev:
- 	docker build -t project-x -f containers/images/Dockerfile . && docker build -t turn -f containers/images/Dockerfile.turn .
+build-proto:
+	protoc internal/gRPC/proto/pipeline.proto --go-grpc_out=internal/gRPC
 
-clean-dev:
-	docker-compose -f containers/composes/dc.dev.yml down
+run-app:
+	go run cmd/main.go
 
-run-dev:
-	docker-compose -f containers/composes/dc.dev.yml up

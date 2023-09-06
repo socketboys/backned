@@ -14,7 +14,17 @@ service Pipeline {
 
 message UploadRequest {
   string mime = 1;
-  bytes chunk = 2;
+  bytes chunk = 16;
+  Language targetLang = 3;
+}
+
+enum Language {
+  HINDI = 0;
+  MALAYALAM = 1;
+  GUJARATI = 2;
+  MARATHI = 3;
+  TELUGU = 4;
+  BENGALI = 5;
 }
 
 message UploadResponse {

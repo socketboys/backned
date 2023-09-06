@@ -2,8 +2,8 @@ package server
 
 import (
 	"github.com/gin-gonic/gin"
-	"project-x/internal/server/polling"
-	"project-x/internal/server/send_video"
+	"project-x/internal/http_server/polling"
+	"project-x/internal/http_server/send_video"
 )
 
 func Run(app *gin.Engine) {
