@@ -3,8 +3,8 @@ package polling
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
-	TaskPool "project-x/internal/task_pool"
-	"project-x/internal/utils"
+	"project-x/internal/server/task_pool"
+	"project-x/internal/server/utils"
 )
 
 func GetProcessStatus(c *gin.Context) {

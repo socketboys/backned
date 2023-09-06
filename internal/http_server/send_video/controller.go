@@ -3,8 +3,8 @@ package send_video
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"project-x/internal/task_pool"
-	"project-x/internal/utils"
+	"project-x/internal/server/task_pool"
+	"project-x/internal/server/utils"
 )
 
 func getLanguageEnum(string) string {

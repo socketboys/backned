@@ -1,0 +1,22 @@
+// pkg/proto/upload.proto
+
+syntax = "proto3";
+
+package proto;
+
+option go_package = ".;pipeline";
+
+service Pipeline {
+  rpc SubtitleDownload(UploadRequest) returns (stream UploadResponse) {}
+  rpc AudioChannel(stream UploadRequest) returns (stream UploadResponse) {}
+}
+
+
+message UploadRequest {
+  string mime = 1;
+  bytes chunk = 2;
+}
+
+message UploadResponse {
+  string name = 1;
+}
