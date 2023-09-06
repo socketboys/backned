@@ -6,7 +6,7 @@
 // - protoc             v3.21.12
 // source: internal/gRPC/proto/pipeline.proto
 
-package gRPC
+package pipeline
 
 import (
 	context "context"
