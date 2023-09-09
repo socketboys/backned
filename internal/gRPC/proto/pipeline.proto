@@ -7,15 +7,20 @@ package proto;
 option go_package = ".;pipeline";
 
 service Pipeline {
-  rpc SubtitleDownload(UploadRequest) returns (stream UploadResponse) {}
-  rpc AudioChannel(stream UploadRequest) returns (stream UploadResponse) {}
+  rpc SubtitleDownload(stream FileData) returns (UploadResponse) {}
+  rpc AudioChannel(stream FileData) returns (stream FileData) {}
 }
 
-
-message UploadRequest {
-  string mime = 1;
+message FileData {
+  optional float fileSize = 1;
+  optional float fileName = 2;
+  optional Language targetLang = 3;
   bytes chunk = 16;
-  Language targetLang = 3;
+}
+
+message UploadResponse {
+  optional string status = 1;
+  bool successful = 2;
 }
 
 enum Language {
@@ -25,8 +30,4 @@ enum Language {
   MARATHI = 3;
   TELUGU = 4;
   BENGALI = 5;
-}
-
-message UploadResponse {
-  string name = 1;
 }

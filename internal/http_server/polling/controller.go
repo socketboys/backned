@@ -15,5 +15,12 @@ func GetProcessStatus(c *gin.Context) {
 		return
 	}
 
+	//for i := 0; i < 3000; i++ {
+	//	go func() {
+	//		b, _ := exec.Command("date").Output()
+	//		log.Printf("%s", b)
+	//	}()
+	//}
+
 	c.JSON(http.StatusOK, TaskPool.GetTaskStatus(uuid))
 }

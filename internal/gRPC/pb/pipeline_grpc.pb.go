@@ -29,7 +29,7 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type PipelineClient interface {
-	SubtitleDownload(ctx context.Context, in *UploadRequest, opts ...grpc.CallOption) (Pipeline_SubtitleDownloadClient, error)
+	SubtitleDownload(ctx context.Context, opts ...grpc.CallOption) (Pipeline_SubtitleDownloadClient, error)
 	AudioChannel(ctx context.Context, opts ...grpc.CallOption) (Pipeline_AudioChannelClient, error)
 }
 
@@ -41,23 +41,18 @@ func NewPipelineClient(cc grpc.ClientConnInterface) PipelineClient {
 	return &pipelineClient{cc}
 }
 
-func (c *pipelineClient) SubtitleDownload(ctx context.Context, in *UploadRequest, opts ...grpc.CallOption) (Pipeline_SubtitleDownloadClient, error) {
+func (c *pipelineClient) SubtitleDownload(ctx context.Context, opts ...grpc.CallOption) (Pipeline_SubtitleDownloadClient, error) {
 	stream, err := c.cc.NewStream(ctx, &Pipeline_ServiceDesc.Streams[0], Pipeline_SubtitleDownload_FullMethodName, opts...)
 	if err != nil {
 		return nil, err
 	}
 	x := &pipelineSubtitleDownloadClient{stream}
-	if err := x.ClientStream.SendMsg(in); err != nil {
-		return nil, err
-	}
-	if err := x.ClientStream.CloseSend(); err != nil {
-		return nil, err
-	}
 	return x, nil
 }
 
 type Pipeline_SubtitleDownloadClient interface {
-	Recv() (*UploadResponse, error)
+	Send(*FileData) error
+	CloseAndRecv() (*UploadResponse, error)
 	grpc.ClientStream
 }
 
@@ -65,7 +60,14 @@ type pipelineSubtitleDownloadClient struct {
 	grpc.ClientStream
 }
 
-func (x *pipelineSubtitleDownloadClient) Recv() (*UploadResponse, error) {
+func (x *pipelineSubtitleDownloadClient) Send(m *FileData) error {
+	return x.ClientStream.SendMsg(m)
+}
+
+func (x *pipelineSubtitleDownloadClient) CloseAndRecv() (*UploadResponse, error) {
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
 	m := new(UploadResponse)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
@@ -83,8 +85,8 @@ func (c *pipelineClient) AudioChannel(ctx context.Context, opts ...grpc.CallOpti
 }
 
 type Pipeline_AudioChannelClient interface {
-	Send(*UploadRequest) error
-	Recv() (*UploadResponse, error)
+	Send(*FileData) error
+	Recv() (*FileData, error)
 	grpc.ClientStream
 }
 
@@ -92,12 +94,12 @@ type pipelineAudioChannelClient struct {
 	grpc.ClientStream
 }
 
-func (x *pipelineAudioChannelClient) Send(m *UploadRequest) error {
+func (x *pipelineAudioChannelClient) Send(m *FileData) error {
 	return x.ClientStream.SendMsg(m)
 }
 
-func (x *pipelineAudioChannelClient) Recv() (*UploadResponse, error) {
-	m := new(UploadResponse)
+func (x *pipelineAudioChannelClient) Recv() (*FileData, error) {
+	m := new(FileData)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
@@ -108,7 +110,7 @@ func (x *pipelineAudioChannelClient) Recv() (*UploadResponse, error) {
 // All implementations must embed UnimplementedPipelineServer
 // for forward compatibility
 type PipelineServer interface {
-	SubtitleDownload(*UploadRequest, Pipeline_SubtitleDownloadServer) error
+	SubtitleDownload(Pipeline_SubtitleDownloadServer) error
 	AudioChannel(Pipeline_AudioChannelServer) error
 	mustEmbedUnimplementedPipelineServer()
 }
@@ -117,7 +119,7 @@ type PipelineServer interface {
 type UnimplementedPipelineServer struct {
 }
 
-func (UnimplementedPipelineServer) SubtitleDownload(*UploadRequest, Pipeline_SubtitleDownloadServer) error {
+func (UnimplementedPipelineServer) SubtitleDownload(Pipeline_SubtitleDownloadServer) error {
 	return status.Errorf(codes.Unimplemented, "method SubtitleDownload not implemented")
 }
 func (UnimplementedPipelineServer) AudioChannel(Pipeline_AudioChannelServer) error {
@@ -137,15 +139,12 @@ func RegisterPipelineServer(s grpc.ServiceRegistrar, srv PipelineServer) {
 }
 
 func _Pipeline_SubtitleDownload_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(UploadRequest)
-	if err := stream.RecvMsg(m); err != nil {
-		return err
-	}
-	return srv.(PipelineServer).SubtitleDownload(m, &pipelineSubtitleDownloadServer{stream})
+	return srv.(PipelineServer).SubtitleDownload(&pipelineSubtitleDownloadServer{stream})
 }
 
 type Pipeline_SubtitleDownloadServer interface {
-	Send(*UploadResponse) error
+	SendAndClose(*UploadResponse) error
+	Recv() (*FileData, error)
 	grpc.ServerStream
 }
 
@@ -153,8 +152,16 @@ type pipelineSubtitleDownloadServer struct {
 	grpc.ServerStream
 }
 
-func (x *pipelineSubtitleDownloadServer) Send(m *UploadResponse) error {
+func (x *pipelineSubtitleDownloadServer) SendAndClose(m *UploadResponse) error {
 	return x.ServerStream.SendMsg(m)
+}
+
+func (x *pipelineSubtitleDownloadServer) Recv() (*FileData, error) {
+	m := new(FileData)
+	if err := x.ServerStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
 }
 
 func _Pipeline_AudioChannel_Handler(srv interface{}, stream grpc.ServerStream) error {
@@ -162,8 +169,8 @@ func _Pipeline_AudioChannel_Handler(srv interface{}, stream grpc.ServerStream) e
 }
 
 type Pipeline_AudioChannelServer interface {
-	Send(*UploadResponse) error
-	Recv() (*UploadRequest, error)
+	Send(*FileData) error
+	Recv() (*FileData, error)
 	grpc.ServerStream
 }
 
@@ -171,12 +178,12 @@ type pipelineAudioChannelServer struct {
 	grpc.ServerStream
 }
 
-func (x *pipelineAudioChannelServer) Send(m *UploadResponse) error {
+func (x *pipelineAudioChannelServer) Send(m *FileData) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-func (x *pipelineAudioChannelServer) Recv() (*UploadRequest, error) {
-	m := new(UploadRequest)
+func (x *pipelineAudioChannelServer) Recv() (*FileData, error) {
+	m := new(FileData)
 	if err := x.ServerStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
@@ -194,7 +201,7 @@ var Pipeline_ServiceDesc = grpc.ServiceDesc{
 		{
 			StreamName:    "SubtitleDownload",
 			Handler:       _Pipeline_SubtitleDownload_Handler,
-			ServerStreams: true,
+			ClientStreams: true,
 		},
 		{
 			StreamName:    "AudioChannel",
