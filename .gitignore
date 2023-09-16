@@ -1,0 +1,6 @@
+*.srt
+*.wav
+*.mp3
+venv/
+bin/
+.idea/
