@@ -2,6 +2,8 @@ package TaskPool
 
 import (
 	"github.com/google/uuid"
+	"os"
+	"os/exec"
 )
 
 var tp taskPool
@@ -17,10 +19,25 @@ func CreateTask(link, language string) (string, error) {
 	}
 
 	go func() {
-		DownloadFile(link, "", euid.String())
+		// for streamed download
+		//DownloadFile(euid.String(), "external/input/", link)
 
-		// TODO:
-		// stream file through gRPC
+		extension := ".wav"
+		path := "external/input/"
+		DirectDownloadFile(euid.String(), path, link, extension)
+
+		defer func() {
+			os.Remove(path + euid.String() + extension)
+		}()
+
+		cmd := exec.Command("python3", "main.py", language, "--audioname", euid.String()+extension)
+		cmd.Dir = "./pipeline-cli/langline"
+		err = cmd.Run()
+		if err != nil {
+			// error handling
+		}
+		err = cmd.Wait()
+
 		// if there is any error during the process then
 		// add the error to the corresponding euid in pool
 		// and on polling remove it from the task pool
