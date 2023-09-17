@@ -2,6 +2,8 @@ package internal
 
 import (
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 	"project-x/internal/polling"
 	"project-x/internal/send_video"
 )
@@ -14,7 +16,8 @@ func Run(app *gin.Engine) {
 
 	//app.Static("/", "../views/layouts")
 
-	app.POST("/audio/dub", send_video.DubAudio)
+	app.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
+	app.POST("/audio/dub", send_video.DubAudio)
 	app.GET("/poll/:uuid", polling.GetProcessStatus)
 }

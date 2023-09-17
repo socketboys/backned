@@ -3,7 +3,6 @@ package send_video
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"project-x/internal/task_pool"
 	"project-x/internal/utils"
 )
 
@@ -11,6 +10,17 @@ func getLanguageEnum(string) string {
 	return ""
 }
 
+// DubAudio Create Dub Request
+// @Summary Create Dub Request
+// @Description Places a dub request on the machine, if the task is successfully created then you will get the uuid, that you can use to poll and get the task status
+// @Tags Create
+// @Produce jso
+//n
+//
+//	@Param id query string Format(uuid)
+//
+// @Success 200 {object} Response
+// @Router /audio/dub [post]
 func DubAudio(c *gin.Context) {
 	var req AudioRequest
 
