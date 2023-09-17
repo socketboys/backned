@@ -31,7 +31,7 @@ func startProcessing(euid uuid.UUID, link, language string) {
 		return
 	}
 	err = cmd.Wait()
-	s, err := cmd.CombinedOutput()
+	s, err := cmd.Output()
 	utils.Logger.Info(string(s))
 
 	err = os.Remove(path + euid.String() + extension)
