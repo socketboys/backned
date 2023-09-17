@@ -7,6 +7,7 @@ import (
 	"github.com/minio/minio-go/v7/pkg/credentials"
 	"log"
 	"os"
+	"project-x/internal/utils"
 	"sync"
 )
 
@@ -38,7 +39,7 @@ func UploadAudio(euid uuid.UUID, objectName, filePath, language string, wg *sync
 	defer func(name string) {
 		err := os.Remove(name)
 		if err != nil {
-			// logger error handling
+			utils.Logger.Error(err.Error())
 		}
 	}(filePath)
 	ctx := context.Background()
@@ -47,12 +48,13 @@ func UploadAudio(euid uuid.UUID, objectName, filePath, language string, wg *sync
 	defer f.Close()
 	if err != nil {
 		// logger
+		utils.Logger.Error(err.Error())
 		UpdateTaskStatus(euid.String(), false, map[string]map[string]string{}, err)
 		return
 	}
 	fi, err := f.Stat()
 	if err != nil {
-		// logger
+		utils.Logger.Error(err.Error())
 		UpdateTaskStatus(euid.String(), false, map[string]map[string]string{}, err)
 		return
 	}
@@ -81,16 +83,18 @@ func UploadAudio(euid uuid.UUID, objectName, filePath, language string, wg *sync
 
 	_, err = client.FPutObject(ctx, spaceName, "audio/"+objectName, filePath, uploadOptions)
 	if err != nil {
-		log.Println(err.Error()) // logger
+		utils.Logger.Error(err.Error())
 		_, err = client.FPutObject(ctx, spaceName, "audio/"+objectName, filePath, uploadOptions)
 		if err != nil {
-			log.Println(err.Error()) // logger
+			utils.Logger.Error(err.Error())
 			UpdateTaskStatus(euid.String(), false, map[string]map[string]string{}, err)
 			return
 		} else {
+			utils.Logger.Debug("Successful audio upload")
 			UpdateTaskLink(euid.String(), language, "audio", host+"audio/"+objectName)
 		}
 	} else {
+		utils.Logger.Debug("Successful audio upload")
 		UpdateTaskLink(euid.String(), language, "audio", host+"audio/"+objectName)
 	}
 }
@@ -100,7 +104,7 @@ func UploadSub(euid uuid.UUID, objectName, filePath, language string, wg *sync.W
 	defer func(name string) {
 		err := os.Remove(name)
 		if err != nil {
-			// logger error handling
+			utils.Logger.Error(err.Error())
 		}
 	}(filePath)
 	ctx := context.Background()
@@ -108,12 +112,12 @@ func UploadSub(euid uuid.UUID, objectName, filePath, language string, wg *sync.W
 	f, err := os.Open(filePath)
 	defer f.Close()
 	if err != nil {
-		// logger
+		utils.Logger.Error(err.Error())
 		UpdateTaskStatus(euid.String(), false, map[string]map[string]string{}, err)
 	}
 	fi, err := f.Stat()
 	if err != nil {
-		// logger
+		utils.Logger.Error(err.Error())
 		UpdateTaskStatus(euid.String(), false, map[string]map[string]string{}, err)
 	}
 
@@ -141,15 +145,17 @@ func UploadSub(euid uuid.UUID, objectName, filePath, language string, wg *sync.W
 
 	_, err = client.FPutObject(ctx, spaceName, "subtitle/"+objectName, filePath, uploadOptions)
 	if err != nil {
-		log.Println(err.Error()) // logger
+		utils.Logger.Error(err.Error())
 		_, err = client.FPutObject(ctx, spaceName, "subtitle/"+objectName, filePath, uploadOptions)
 		if err != nil {
-			log.Println(err.Error()) // logger
+			utils.Logger.Error(err.Error())
 			UpdateTaskStatus(euid.String(), false, map[string]map[string]string{}, err)
 		} else {
+			utils.Logger.Debug("Successful upload of subtitle")
 			UpdateTaskLink(euid.String(), language, "subtitle", host+"subtitle/"+objectName)
 		}
 	} else {
+		utils.Logger.Debug("Successful upload of subtitle")
 		UpdateTaskLink(euid.String(), language, "subtitle", host+"subtitle/"+objectName)
 	}
 }
