@@ -15,7 +15,7 @@ func DownloadFile(uuid, path, url string) {
 
 	if err != nil {
 		log.Println(err.Error())
-		UpdateTaskStatus(uuid, false, -1, err)
+		UpdateTaskStatus(uuid, false, map[string]map[string]string{}, err)
 		return
 	}
 
@@ -25,7 +25,7 @@ func DownloadFile(uuid, path, url string) {
 
 	if err != nil {
 		log.Println(err.Error())
-		UpdateTaskStatus(uuid, false, -1, err)
+		UpdateTaskStatus(uuid, false, map[string]map[string]string{}, err)
 		return
 	}
 
@@ -47,7 +47,7 @@ func DownloadFile(uuid, path, url string) {
 
 	for i := 0; i < int(chunks); i++ {
 		if n, err := file.Write(bytes[i]); n == 0 || err != nil {
-			UpdateTaskStatus(uuid, false, -1, err)
+			UpdateTaskStatus(uuid, false, map[string]map[string]string{}, err)
 			return
 		}
 	}
@@ -71,7 +71,7 @@ func StreamChunks(i int64, chunkSize int, uuid, url string, bytes *[][]byte, fil
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
-		UpdateTaskStatus(uuid, false, -1, err)
+		UpdateTaskStatus(uuid, false, map[string]map[string]string{}, err)
 		return
 	} else {
 		req.Header.Add("Range", fmt.Sprintf("bytes=%v-%v", i, end))
@@ -84,16 +84,16 @@ func StreamChunks(i int64, chunkSize int, uuid, url string, bytes *[][]byte, fil
 		},
 	}).Do(req)
 	if err != nil {
-		UpdateTaskStatus(uuid, false, -1, err)
+		UpdateTaskStatus(uuid, false, map[string]map[string]string{}, err)
 		return
 	} else if resp.StatusCode != http.StatusPartialContent {
-		UpdateTaskStatus(uuid, false, -1, fmt.Errorf("expected HTTP 206, but the file was not partially chunked and status was %v", resp.StatusCode))
+		UpdateTaskStatus(uuid, false, map[string]map[string]string{}, fmt.Errorf("expected HTTP 206, but the file was not partially chunked and status was %v", resp.StatusCode))
 		return
 	}
 
 	data, err := io.ReadAll(resp.Body)
 	if err != nil {
-		UpdateTaskStatus(uuid, false, -1, err)
+		UpdateTaskStatus(uuid, false, map[string]map[string]string{}, err)
 		return
 	}
 	(*bytes)[i] = data

@@ -3,14 +3,15 @@ package main
 import (
 	"github.com/gin-gonic/gin"
 	"project-x/internal"
-	"project-x/internal/digital_ocean"
+	"project-x/internal/task_pool"
 	"project-x/internal/utils"
 )
 
 func main() {
 	gin.SetMode(gin.TestMode)
 
-	digital_ocean.InitSpace()
+	// TODO shift to os.Getenv()
+	TaskPool.InitSpace()
 	utils.InitLogger()
 
 	app := gin.Default()
