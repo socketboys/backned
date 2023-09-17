@@ -2,17 +2,19 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	"project-x/internal/http_server"
-	"project-x/internal/http_server/utils"
+	"project-x/internal"
+	"project-x/internal/digital_ocean"
+	"project-x/internal/utils"
 )
 
 func main() {
 	gin.SetMode(gin.TestMode)
 
+	digital_ocean.InitSpace()
 	utils.InitLogger()
 
 	app := gin.Default()
-	server.Run(app)
+	internal.Run(app)
 
 	err := app.Run(":9010")
 	if err != nil {
