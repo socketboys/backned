@@ -24,7 +24,7 @@ func CreateTask(link, language string) (string, error) {
 	utils.Logger.Info("Task Created")
 	tp.Task[euid.String()] = &TaskStatus{
 		AudioProcessingComplete: false,
-		Err:                     nil,
+		Err:                     "",
 		Links:                   map[string]map[string]string{},
 	}
 
@@ -41,7 +41,7 @@ func UpdateTaskStatus(euid string, completion bool, links map[string]map[string]
 	utils.Logger.Info("Task status updated")
 	tp.Task[euid] = &TaskStatus{
 		AudioProcessingComplete: completion,
-		Err:                     err,
+		Err:                     err.Error(),
 		Links:                   links,
 	}
 }
@@ -56,7 +56,7 @@ func UpdateTaskLink(euid, language, key, value string) {
 
 func GetTaskStatus(euid string) *TaskStatus {
 	utils.Logger.Info("Task status requested")
-	if tp.Task[euid].Err != nil {
+	if tp.Task[euid].Err != "" {
 		defer DeleteTask(euid)
 	}
 	return tp.Task[euid]

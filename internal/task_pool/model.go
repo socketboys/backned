@@ -6,6 +6,6 @@ type taskPool struct {
 
 type TaskStatus struct {
 	AudioProcessingComplete bool                         `json:"processing_complete"`
-	Err                     error                        `json:"error"`
+	Err                     string                       `json:"error"`
 	Links                   map[string]map[string]string `json:"links"`
 }
