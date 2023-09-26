@@ -56,7 +56,7 @@ func UpdateTaskLink(euid, language, key, value string) {
 
 func GetTaskStatus(euid string) *TaskStatus {
 	utils.Logger.Info("Task status requested")
-	if tp.Task[euid].Err != "" {
+	if len(tp.Task[euid].Err) > 0 {
 		defer DeleteTask(euid)
 	}
 	return tp.Task[euid]
