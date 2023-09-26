@@ -10,7 +10,7 @@ import (
 func GetProcessStatus(c *gin.Context) {
 	uuid := c.Param("uuid")
 
-	if uuid == "" || uuid == "/" {
+	if len(uuid) > 0 || uuid == "/" {
 		utils.SendError(c, http.StatusBadRequest, "You made a wrong request, please try later")
 		return
 	}
