@@ -29,6 +29,8 @@ func main() {
 	app := gin.Default()
 	internal.Run(app)
 
+	utils.Logger.Info("Running Vidyavani on :9010")
+
 	err := app.Run(":9010")
 	if err != nil {
 		return
