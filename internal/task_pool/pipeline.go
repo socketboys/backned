@@ -17,31 +17,9 @@ func startProcessing(euid uuid.UUID, link, language string) {
 	utils.Logger.Info("Audio Download started")
 	DirectDownloadFile(euid.String(), path, link, extension)
 
-	utils.Logger.Info("Starting command execution")
-	cmd := exec.Command("python3", "main.py", language, "--audioname", euid.String()+extension)
-	cmd.Dir = "./pipeline-cli/langline"
-	err := cmd.Run()
-	if err != nil {
-		utils.Logger.Error(err.Error())
-		UpdateTaskStatus(euid.String(), false, map[string]map[string]string{}, err)
-		err = os.Remove(path + euid.String() + extension)
-		if err != nil {
-			utils.Logger.Error(err.Error())
-		}
-		return
-	}
-	err = cmd.Wait()
-	s, err := cmd.Output()
-	utils.Logger.Info(string(s))
-
-	err = os.Remove(path + euid.String() + extension)
-	if err != nil {
-		utils.Logger.Error(err.Error())
-	}
-	err = os.Remove(path + euid.String() + ".srt")
-	if err != nil {
-		utils.Logger.Error(err.Error())
-	}
+	executeWhisper(path, euid.String(), extension)
+	executeTransformers(language, euid.String(), path, extension)
+	cleanResidualFiles(path, euid.String(), extension)
 
 	utils.Logger.Info("Starting upload")
 	var wg sync.WaitGroup
@@ -53,6 +31,56 @@ func startProcessing(euid uuid.UUID, link, language string) {
 
 	utils.Logger.Info("Uploading executed")
 	tp.Task[euid.String()].AudioProcessingComplete = true
+}
+
+func executeWhisper(path, euid, extension string) {
+	utils.Logger.Info("Starting whisper.cpp command execution")
+	cmd := exec.Command("./main", "--output-srt", "true", "-of", "../../external/input/"+euid, "-f", "../../external/input/"+euid)
+	cmd.Dir = "./pipeline-cli/whisper"
+	err := cmd.Run()
+	if err != nil {
+		utils.Logger.Error(err.Error())
+		UpdateTaskStatus(euid, false, map[string]map[string]string{}, err)
+		err = os.Remove(path + euid + extension)
+		if err != nil {
+			utils.Logger.Error(err.Error())
+		}
+		return
+	}
+	err = cmd.Wait()
+	s, err := cmd.Output()
+	utils.Logger.Info(string(s))
+}
+
+func executeTransformers(language, euid, path, extension string) {
+	utils.Logger.Info("Starting python command execution")
+	cmd := exec.Command("python3", "main.py", language, "--audioname", euid+extension+".srt")
+	cmd.Dir = "./pipeline-cli/langline"
+	utils.Logger.Info(cmd.String())
+	err := cmd.Run()
+	if err != nil {
+		utils.Logger.Error(err.Error())
+		UpdateTaskStatus(euid, false, map[string]map[string]string{}, err)
+		err = os.Remove(path + euid + extension)
+		if err != nil {
+			utils.Logger.Error(err.Error())
+		}
+		return
+	}
+	err = cmd.Wait()
+	s, err := cmd.Output()
+	utils.Logger.Info(string(s))
+}
+
+func cleanResidualFiles(path, euid, extension string) {
+	err := os.Remove(path + euid + extension)
+	if err != nil {
+		utils.Logger.Error(err.Error())
+	}
+	err = os.Remove(path + euid + ".srt")
+	if err != nil {
+		utils.Logger.Error(err.Error())
+	}
 }
 
 func getFilePrefix(language string) string {
