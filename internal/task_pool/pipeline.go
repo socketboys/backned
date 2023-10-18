@@ -17,7 +17,9 @@ func startProcessing(euid uuid.UUID, link, language string) {
 	utils.Logger.Info("Audio Download started")
 	DirectDownloadFile(euid.String(), path, link, extension)
 
+	convertTo16kHz(path, euid.String(), extension)
 	executeWhisper(path, euid.String(), extension)
+
 	executeTransformers(language, euid.String(), path, extension)
 	cleanResidualFiles(path, euid.String(), extension)
 
@@ -33,10 +35,50 @@ func startProcessing(euid uuid.UUID, link, language string) {
 	tp.Task[euid.String()].AudioProcessingComplete = true
 }
 
+func convertTo16kHz(path, euid, extension string) {
+	utils.Logger.Info("Converting to 16kHz using FFmPEG")
+	cmd := exec.Command("ffmpeg", "-i", "../../external/input/"+euid+extension, "-ar", "16000", "../../external/input/"+euid+"_"+extension)
+	cmd.Dir = "./pipeline-cli/whisper"
+	err := cmd.Run()
+	if err != nil {
+		utils.Logger.Error(err.Error())
+		UpdateTaskStatus(euid, false, map[string]map[string]string{}, err)
+		err = os.Remove(path + euid + extension)
+		if err != nil {
+			utils.Logger.Error(err.Error())
+		}
+		return
+	}
+	err = cmd.Wait()
+	s, err := cmd.Output()
+	err = os.Remove("./external/input/" + euid + extension)
+	if err != nil {
+		utils.Logger.Error(err.Error())
+		UpdateTaskStatus(euid, false, map[string]map[string]string{}, err)
+		err = os.Remove(path + euid + extension)
+		if err != nil {
+			utils.Logger.Error(err.Error())
+		}
+		return
+	}
+	err = os.Rename("./external/input/"+euid+"_"+extension, "./external/input/"+euid+extension)
+	if err != nil {
+		utils.Logger.Error(err.Error())
+		UpdateTaskStatus(euid, false, map[string]map[string]string{}, err)
+		err = os.Remove(path + euid + extension)
+		if err != nil {
+			utils.Logger.Error(err.Error())
+		}
+		return
+	}
+	utils.Logger.Info(string(s))
+}
+
 func executeWhisper(path, euid, extension string) {
 	utils.Logger.Info("Starting whisper.cpp command execution")
-	cmd := exec.Command("./main", "--output-srt", "true", "-of", "../../external/input/"+euid, "-f", "../../external/input/"+euid)
+	cmd := exec.Command("./main", "--output-srt", "true", "-of", "../../external/input/"+euid+extension, "-f", "../../external/input/"+euid+extension)
 	cmd.Dir = "./pipeline-cli/whisper"
+	utils.Logger.Info(cmd.String())
 	err := cmd.Run()
 	if err != nil {
 		utils.Logger.Error(err.Error())
