@@ -84,14 +84,14 @@ definitions:
 host: localhost:9010
 info:
   contact:
-    email: support@swagger.io
+    email: support@vaaani.live
     name: API Support
-    url: http://www.swagger.io/support
+    url: https://www.vaaani.live
   description: Testing Swagger APIs.
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
-  termsOfService: http://swagger.io/terms/
+  termsOfService: https://vaaani.live
   title: SocketBoys/Backned APIs
   version: "1.0"
 paths:

@@ -12,10 +12,10 @@ import (
 // @title SocketBoys/Backned APIs
 // @version 1.0
 // @description Testing Swagger APIs.
-// @termsOfService http://swagger.io/terms/
+// @termsOfService https://vaaani.live
 // @contact.name API Support
-// @contact.url http://www.swagger.io/support
-// @contact.email support@swagger.io
+// @contact.url https://www.vaaani.live
+// @contact.email support@vaaani.live
 // @license.name Apache 2.0
 // @license.url http://www.apache.org/licenses/LICENSE-2.0.html
 // @host localhost:9010

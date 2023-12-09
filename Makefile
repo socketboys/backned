@@ -6,5 +6,5 @@ delete-proto:
 	rm internal/gRPC/pb/*.go
 
 server:
-	go run cmd/main.go
+	go run main.go
 

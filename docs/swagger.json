@@ -6,11 +6,11 @@
     "info": {
         "description": "Testing Swagger APIs.",
         "title": "SocketBoys/Backned APIs",
-        "termsOfService": "http://swagger.io/terms/",
+        "termsOfService": "https://vaaani.live",
         "contact": {
             "name": "API Support",
-            "url": "http://www.swagger.io/support",
-            "email": "support@swagger.io"
+            "url": "https://www.vaaani.live",
+            "email": "support@vaaani.live"
         },
         "license": {
             "name": "Apache 2.0",
