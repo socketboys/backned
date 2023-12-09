@@ -11,7 +11,7 @@ func init() {
 	tp.Task = make(map[string]*TaskStatus)
 }
 
-func CreateTask(link, language string) (string, error) {
+func CreateTask(link, language, emailId string, audioLength float32) (string, error) {
 	euid, err := uuid.NewUUID()
 	if err != nil {
 		return "", err
@@ -19,7 +19,7 @@ func CreateTask(link, language string) (string, error) {
 
 	utils.Logger.Info("Starting pipeline")
 
-	go startProcessing(euid, link, language)
+	go startProcessing(euid, link, language, emailId, audioLength)
 
 	utils.Logger.Info("Task Created")
 	tp.Task[euid.String()] = &TaskStatus{
@@ -34,7 +34,7 @@ func CreateTask(link, language string) (string, error) {
 func DeleteTask(euid string) {
 	delete(tp.Task, euid)
 	utils.Logger.Debug(euid + " task deleted")
-	// TODO: ask ishar to create a delete request in case the browser is closed during processing, to remove unnecessary memory allocation and abort gRPC stream for that request
+	// TODO: ask ishar to create a delete request in case the browser is closed during processing, to remove unnecessary memory allocation
 }
 
 func UpdateTaskStatus(euid string, completion bool, links map[string]map[string]string, err error) {
@@ -43,6 +43,14 @@ func UpdateTaskStatus(euid string, completion bool, links map[string]map[string]
 		AudioProcessingComplete: completion,
 		Err:                     err.Error(),
 		Links:                   links,
+	}
+}
+
+func UpdateTaskCompletionStatus(euid string, completion bool, err error) {
+	utils.Logger.Info("Task status updated")
+	tp.Task[euid].AudioProcessingComplete = completion
+	if err != nil {
+		tp.Task[euid].Err = err.Error()
 	}
 }
 

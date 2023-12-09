@@ -13,21 +13,23 @@ import (
 
 var client *minio.Client
 
-const host = "https://backned.blr1.cdn.digitaloceanspaces.com/"
-const spaceName = "backned"
+var host string
+var spaceName string
 
 func InitSpace() {
-	accessEndpoint := "blr1.digitaloceanspaces.com"
+	host = os.Getenv("DO_CDN_HOST")
+	spaceName = os.Getenv("DO_SPACE_NAME")
+	accessEndpoint := os.Getenv("DO_ACCESS_ENDPOINT")
 	ssl := true
-	accessKey := "DO00Q89RLRRGNK7AZAUH"
-	secretAccessKey := "oaVwJJOlMlWwVTDJArVrahWsAVFbtmTxFriF7DNTLUY"
-	//token := "dop_v1_6805dff11c48a4422e126bf19bacdd95e4249aab651a97f54243caf9fe38af7e"
+	accessKey := os.Getenv("DO_ACCESS_KEY")
+	secretAccessKey := os.Getenv("DO_SECRET_ACCESS_KEY")
+	//token := os.GetEnv("DO_TOKEN")
 
 	var err error
 
 	if client, err = minio.New(accessEndpoint, &minio.Options{
 		Creds:  credentials.NewStaticV4(accessKey, secretAccessKey, ""),
-		Region: "blr1",
+		Region: os.Getenv("DO_REGION"),
 		Secure: ssl,
 	}); err != nil {
 		log.Fatalf("%v", err.Error())
@@ -50,12 +52,14 @@ func UploadAudio(euid uuid.UUID, objectName, filePath, language string, wg *sync
 		// logger
 		utils.Logger.Error(err.Error())
 		UpdateTaskStatus(euid.String(), false, map[string]map[string]string{}, err)
+		// TODO mail user
 		return
 	}
 	fi, err := f.Stat()
 	if err != nil {
 		utils.Logger.Error(err.Error())
 		UpdateTaskStatus(euid.String(), false, map[string]map[string]string{}, err)
+		// TODO mail user
 		return
 	}
 
@@ -93,6 +97,7 @@ func UploadAudio(euid uuid.UUID, objectName, filePath, language string, wg *sync
 			utils.Logger.Debug("Successful audio upload")
 			UpdateTaskLink(euid.String(), language, "audio", host+"audio/"+objectName)
 		}
+		// TODO mail user
 	} else {
 		utils.Logger.Debug("Successful audio upload")
 		UpdateTaskLink(euid.String(), language, "audio", host+"audio/"+objectName)
@@ -114,11 +119,13 @@ func UploadSub(euid uuid.UUID, objectName, filePath, language string, wg *sync.W
 	if err != nil {
 		utils.Logger.Error(err.Error())
 		UpdateTaskStatus(euid.String(), false, map[string]map[string]string{}, err)
+		// TODO mail user
 	}
 	fi, err := f.Stat()
 	if err != nil {
 		utils.Logger.Error(err.Error())
 		UpdateTaskStatus(euid.String(), false, map[string]map[string]string{}, err)
+		// TODO mail user
 	}
 
 	var uploadOptions minio.PutObjectOptions
@@ -154,6 +161,7 @@ func UploadSub(euid uuid.UUID, objectName, filePath, language string, wg *sync.W
 			utils.Logger.Debug("Successful upload of subtitle")
 			UpdateTaskLink(euid.String(), language, "subtitle", host+"subtitle/"+objectName)
 		}
+		// TODO mail user
 	} else {
 		utils.Logger.Debug("Successful upload of subtitle")
 		UpdateTaskLink(euid.String(), language, "subtitle", host+"subtitle/"+objectName)

@@ -7,6 +7,17 @@ import (
 	"project-x/internal/utils"
 )
 
+// GetProcessStatus godoc
+// @Summary poll ongoing task status.
+// @Description get the status of ongoing task request of processing the audio.
+// @Tags Poll Get
+// @Accept json
+// @Produce json
+//
+// @Param uuid path string true "uuid"
+//
+// @Success 200 {object} map[string]interface{}
+// @Router /poll/:uuid [get]
 func GetProcessStatus(c *gin.Context) {
 	uuid := c.Param("uuid")
 
@@ -14,13 +25,6 @@ func GetProcessStatus(c *gin.Context) {
 		utils.SendError(c, http.StatusBadRequest, "You made a wrong request, please try later")
 		return
 	}
-
-	//for i := 0; i < 3000; i++ {
-	//	go func() {
-	//		b, _ := exec.Command("date").Output()
-	//		log.Printf("%s", b)
-	//	}()
-	//}
 
 	c.JSON(http.StatusOK, TaskPool.GetTaskStatus(uuid))
 }

@@ -9,3 +9,11 @@ type TaskStatus struct {
 	Err                     string                       `json:"error"`
 	Links                   map[string]map[string]string `json:"links"`
 }
+
+type DeductRequest struct {
+	Cost     float32 `json:"cost"`
+	EmailId  string  `json:"email_id"`
+	Subtitle string  `json:"subtitle"`
+	Video    string  `json:"video"`
+	Euid     string  `json:"euid"`
+}

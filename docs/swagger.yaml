@@ -1,0 +1,89 @@
+definitions:
+  send_video.AudioRequest:
+    properties:
+      audio_length:
+        type: number
+      email:
+        type: string
+      file_link:
+        type: string
+      language:
+        description: 'TODO: Add support for dubbing multiple languages at the same
+          time'
+        type: string
+    required:
+    - audio_length
+    - email
+    - file_link
+    - language
+    type: object
+  send_video.Response:
+    properties:
+      euid:
+        type: string
+      msg:
+        type: string
+    type: object
+host: localhost:8081
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: Testing Swagger APIs.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: SocketBoys/Backned APIs
+  version: "1.0"
+paths:
+  /audio/dub:
+    post:
+      consumes:
+      - application/json
+      description: Places a dub request on the machine, if the task is successfully
+        created then you will get the uuid, that you can use to poll and get the task
+        status
+      parameters:
+      - description: request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/send_video.AudioRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/send_video.Response'
+      summary: Create Dub Request
+      tags:
+      - Create DubRequest
+  /poll/:uuid:
+    get:
+      consumes:
+      - application/json
+      description: get the status of ongoing task request of processing the audio.
+      parameters:
+      - description: uuid
+        in: path
+        name: uuid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: poll ongoing task status.
+      tags:
+      - Poll Get
+schemes:
+- http
+swagger: "2.0"

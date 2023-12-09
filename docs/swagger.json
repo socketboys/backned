@@ -1,0 +1,128 @@
+{
+    "schemes": [
+        "http"
+    ],
+    "swagger": "2.0",
+    "info": {
+        "description": "Testing Swagger APIs.",
+        "title": "SocketBoys/Backned APIs",
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+            "name": "API Support",
+            "url": "http://www.swagger.io/support",
+            "email": "support@swagger.io"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0"
+    },
+    "host": "localhost:8081",
+    "paths": {
+        "/audio/dub": {
+            "post": {
+                "description": "Places a dub request on the machine, if the task is successfully created then you will get the uuid, that you can use to poll and get the task status",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Create DubRequest"
+                ],
+                "summary": "Create Dub Request",
+                "parameters": [
+                    {
+                        "description": "request body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/send_video.AudioRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/send_video.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/poll/:uuid": {
+            "get": {
+                "description": "get the status of ongoing task request of processing the audio.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Poll Get"
+                ],
+                "summary": "poll ongoing task status.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "uuid",
+                        "name": "uuid",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "send_video.AudioRequest": {
+            "type": "object",
+            "required": [
+                "audio_length",
+                "email",
+                "file_link",
+                "language"
+            ],
+            "properties": {
+                "audio_length": {
+                    "type": "number"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "file_link": {
+                    "type": "string"
+                },
+                "language": {
+                    "description": "TODO: Add support for dubbing multiple languages at the same time",
+                    "type": "string"
+                }
+            }
+        },
+        "send_video.Response": {
+            "type": "object",
+            "properties": {
+                "euid": {
+                    "type": "string"
+                },
+                "msg": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

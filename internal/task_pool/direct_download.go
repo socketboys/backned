@@ -12,13 +12,7 @@ func DirectDownloadFile(uuid, path, url, extension string) {
 	file, err := os.Create(path + uuid + extension)
 	if err != nil {
 		utils.Logger.Error(err.Error())
-		UpdateTaskStatus(uuid, false, map[string]map[string]string{}, err)
-		os.Remove(path + uuid + extension)
-		return
-	}
-
-	if err != nil {
-		utils.Logger.Error(err.Error())
+		// TODO mail user
 		UpdateTaskStatus(uuid, false, map[string]map[string]string{}, err)
 		os.Remove(path + uuid + extension)
 		return
@@ -29,6 +23,7 @@ func DirectDownloadFile(uuid, path, url, extension string) {
 		utils.Logger.Error(err.Error())
 		UpdateTaskStatus(uuid, false, map[string]map[string]string{}, err)
 		os.Remove(path + uuid + extension)
+		// TODO mail user
 		return
 	}
 
@@ -42,13 +37,16 @@ func DirectDownloadFile(uuid, path, url, extension string) {
 		UpdateTaskStatus(uuid, false, map[string]map[string]string{}, err)
 
 		os.Remove(path + uuid + extension)
+		// TODO mail user
 		return
 	}
 
 	if check := checkMimeType(resp.Header.Get("Content-Type")); check == false {
 		utils.Logger.Error(err.Error())
 		UpdateTaskStatus(uuid, false, map[string]map[string]string{}, errors.New("Invalid media link provided"))
+
 		os.Remove(path + uuid + extension)
+		// TODO mail user
 		return
 	}
 

@@ -3,6 +3,7 @@
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/pipeline-cli" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/whisper_cpp" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/../matrix" vcs="Git" />
   </component>
 </project>

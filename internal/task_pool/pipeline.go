@@ -5,34 +5,47 @@ import (
 	"os"
 	"os/exec"
 	"project-x/internal/utils"
-	"sync"
+	"time"
 )
 
-func startProcessing(euid uuid.UUID, link, language string) {
+func startProcessing(euid uuid.UUID, link, language, emailId string, audioLength float32) {
 	// TODO for streamed download for files bigger than 5 MiB
 	//DownloadFile(euid.String(), "external/input/", link)
 
-	extension := ".wav"
-	path := "external/input/"
-	utils.Logger.Info("Audio Download started")
-	DirectDownloadFile(euid.String(), path, link, extension)
+	// TODO get audio length from FE
+	// TODO add check for credit amount less than processing cost
 
-	convertTo16kHz(path, euid.String(), extension)
-	executeWhisper(path, euid.String(), extension)
+	//extension := ".wav"
+	//path := "external/input/"
+	//utils.Logger.Info("Audio Download started")
+	//DirectDownloadFile(euid.String(), path, link, extension)
+	//utils.Logger.Info("File Download complete")
+	//
+	//utils.Logger.Info("FFMPEG starting")
+	//convertTo16kHz(path, euid.String(), extension)
+	//utils.Logger.Info("FFMPEG done")
+	//
+	//utils.Logger.Info("Whisper.cpp starting")
+	//executeWhisper(path, euid.String(), extension)
+	//utils.Logger.Info("Whisper.cpp done")
+	//
+	//utils.Logger.Info("Transformers starting")
+	//executeTransformers(language, euid.String(), path, extension)
+	//utils.Logger.Info("Transformers done")
+	//
+	//cleanResidualFiles(path, euid.String(), extension)
+	//
+	//utils.Logger.Info("Starting upload")
+	//var wg sync.WaitGroup
+	//
+	//wg.Add(2)
+	//go UploadAudio(euid, euid.String()+getFilePrefix(language)+".wav", "external/audio/"+euid.String()+getFilePrefix(language)+".wav", language, &wg)
+	//go UploadSub(euid, euid.String()+getFilePrefix(language)+".srt", "external/subtitle/"+euid.String()+getFilePrefix(language)+".srt", language, &wg)
+	//wg.Wait()
 
-	executeTransformers(language, euid.String(), path, extension)
-	cleanResidualFiles(path, euid.String(), extension)
+	time.Sleep(time.Second * 15)
 
-	utils.Logger.Info("Starting upload")
-	var wg sync.WaitGroup
-
-	wg.Add(2)
-	go UploadAudio(euid, euid.String()+getFilePrefix(language)+".wav", "external/audio/"+euid.String()+getFilePrefix(language)+".wav", language, &wg)
-	go UploadSub(euid, euid.String()+getFilePrefix(language)+".srt", "external/subtitle/"+euid.String()+getFilePrefix(language)+".srt", language, &wg)
-	wg.Wait()
-
-	utils.Logger.Info("Uploading executed")
-	tp.Task[euid.String()].AudioProcessingComplete = true
+	DeductMoney(audioLength*7.083, emailId, "subtitle/"+euid.String()+getFilePrefix(language)+".srt", "audio/"+euid.String()+getFilePrefix(language)+".wav", euid) // cost as per $5/hr
 }
 
 func convertTo16kHz(path, euid, extension string) {
@@ -47,6 +60,7 @@ func convertTo16kHz(path, euid, extension string) {
 		if err != nil {
 			utils.Logger.Error(err.Error())
 		}
+		// TODO mail user
 		return
 	}
 	err = cmd.Wait()
@@ -59,6 +73,7 @@ func convertTo16kHz(path, euid, extension string) {
 		if err != nil {
 			utils.Logger.Error(err.Error())
 		}
+		// TODO mail user
 		return
 	}
 	err = os.Rename("./external/input/"+euid+"_"+extension, "./external/input/"+euid+extension)
@@ -69,6 +84,7 @@ func convertTo16kHz(path, euid, extension string) {
 		if err != nil {
 			utils.Logger.Error(err.Error())
 		}
+		// TODO mail user
 		return
 	}
 	utils.Logger.Info(string(s))
@@ -87,6 +103,7 @@ func executeWhisper(path, euid, extension string) {
 		if err != nil {
 			utils.Logger.Error(err.Error())
 		}
+		// TODO mail user
 		return
 	}
 	err = cmd.Wait()
@@ -107,6 +124,7 @@ func executeTransformers(language, euid, path, extension string) {
 		if err != nil {
 			utils.Logger.Error(err.Error())
 		}
+		// TODO mail user
 		return
 	}
 	err = cmd.Wait()

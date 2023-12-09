@@ -5,6 +5,6 @@ build-proto:
 delete-proto:
 	rm internal/gRPC/pb/*.go
 
-run-app:
+server:
 	go run cmd/main.go
 
