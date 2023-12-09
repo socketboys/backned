@@ -7,6 +7,16 @@ import (
 	"project-x/internal/utils"
 )
 
+// AddMoney Add money to user's account
+// @Summary Adds a new transaction record to the transaction table
+// @Description Adds a new transaction record to the transaction table, and you will get the final credits of user's account
+// @Tags Create AddMoney
+// @Accept json
+// @Produce json
+// @Param request body AddReqModel true "request body"
+//
+// @Success 200
+// @Router /profile/add_money [post]
 func AddMoney(ctx *gin.Context) {
 	var req AddReqModel
 

@@ -16,7 +16,7 @@ import (
 //
 // @Param uuid path string true "uuid"
 //
-// @Success 200 {object} map[string]interface{}
+// @Success 200 {object} TaskPool.TaskStatus
 // @Router /poll/:uuid [get]
 func GetProcessStatus(c *gin.Context) {
 	uuid := c.Param("uuid")

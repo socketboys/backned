@@ -7,6 +7,16 @@ import (
 	"project-x/internal/utils"
 )
 
+// GetTxnHistory get user's txns
+// @Summary get a list of all the txns that the user did
+// @Description lazy loading can be added, to implement that pagination on BE will be required
+// @Tags Get TxnHistory
+// @Accept json
+// @Produce json
+// @Param email path string true "rajatn@gmail.com"
+//
+// @Success 200
+// @Router /profile/txn_history [get]
 func GetTxnHistory(ctx *gin.Context) {
 	email := ctx.Param("email")
 

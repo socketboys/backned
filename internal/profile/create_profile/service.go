@@ -7,6 +7,16 @@ import (
 	"project-x/internal/utils"
 )
 
+// CreateProfile Create a profile on Vaaani
+// @Summary create a profile for the user using google auth
+// @Description Adds a new user where the primary key will be the gmail id and profile id will be given in response
+// @Tags Create Profile
+// @Accept json
+// @Produce json
+// @Param request body CreateReqModel true "request body"
+//
+// @Success 200
+// @Router /profile/create [post]
 func CreateProfile(ctx *gin.Context) {
 	var req CreateReqModel
 

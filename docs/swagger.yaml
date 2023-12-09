@@ -1,15 +1,72 @@
 definitions:
+  TaskPool.DeductRequest:
+    properties:
+      cost:
+        type: number
+      email_id:
+        type: string
+      euid:
+        type: string
+      subtitle:
+        type: string
+      video:
+        type: string
+    type: object
+  TaskPool.TaskStatus:
+    properties:
+      error:
+        example: There was an error
+        type: string
+      links:
+        additionalProperties:
+          additionalProperties:
+            type: string
+          type: object
+        type: object
+      processing_complete:
+        example: false
+        type: boolean
+    type: object
+  add_money.AddReqModel:
+    properties:
+      credits:
+        example: 1000
+        type: integer
+      email:
+        example: rajatn@gmail.com
+        type: string
+    type: object
+  create_profile.CreateReqModel:
+    properties:
+      email:
+        example: rajatn@gmail.com
+        type: string
+      initial_credits:
+        description: default value
+        example: 2100
+        type: integer
+      name:
+        example: Rajat Kumar
+        type: string
+      phone:
+        example: 8010201921
+        type: integer
+    type: object
   send_video.AudioRequest:
     properties:
       audio_length:
+        example: 10
         type: number
       email:
+        example: rajatn@gmail.com
         type: string
       file_link:
+        example: https://www.emaple.com/file
         type: string
       language:
         description: 'TODO: Add support for dubbing multiple languages at the same
           time'
+        example: hindi|telugu|marathi|bengali|tamil
         type: string
     required:
     - audio_length
@@ -24,7 +81,7 @@ definitions:
       msg:
         type: string
     type: object
-host: localhost:8081
+host: localhost:9010
 info:
   contact:
     email: support@swagger.io
@@ -79,11 +136,92 @@ paths:
         "200":
           description: OK
           schema:
-            additionalProperties: true
-            type: object
+            $ref: '#/definitions/TaskPool.TaskStatus'
       summary: poll ongoing task status.
       tags:
       - Poll Get
+  /profile/add_money:
+    post:
+      consumes:
+      - application/json
+      description: Adds a new transaction record to the transaction table, and you
+        will get the final credits of user's account
+      parameters:
+      - description: request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/add_money.AddReqModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: Adds a new transaction record to the transaction table
+      tags:
+      - Create AddMoney
+  /profile/create:
+    post:
+      consumes:
+      - application/json
+      description: Adds a new user where the primary key will be the gmail id and
+        profile id will be given in response
+      parameters:
+      - description: request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/create_profile.CreateReqModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: create a profile for the user using google auth
+      tags:
+      - Create Profile
+  /profile/deduct_money:
+    post:
+      consumes:
+      - application/json
+      description: -ve credits are not yet handled
+      parameters:
+      - description: request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/TaskPool.DeductRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: deduct x amount of money from user's account
+      tags:
+      - Delete CutMoneyService
+  /profile/txn_history:
+    get:
+      consumes:
+      - application/json
+      description: lazy loading can be added, to implement that pagination on BE will
+        be required
+      parameters:
+      - description: rajatn@gmail.com
+        in: path
+        name: email
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: get a list of all the txns that the user did
+      tags:
+      - Get TxnHistory
 schemes:
 - http
 swagger: "2.0"

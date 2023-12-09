@@ -9,6 +9,16 @@ import (
 	"project-x/internal/utils"
 )
 
+// CutMoneyService deduct money
+// @Summary deduct x amount of money from user's account
+// @Description -ve credits are not yet handled
+// @Tags Delete CutMoneyService
+// @Accept json
+// @Produce json
+// @Param request body DeductRequest true "request body"
+//
+// @Success 200
+// @Router /profile/deduct_money [post]
 func CutMoneyService(ctx *gin.Context) {
 	var req DeductRequest
 	err := ctx.Bind(&req)
