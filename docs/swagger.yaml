@@ -81,7 +81,7 @@ definitions:
       msg:
         type: string
     type: object
-host: localhost:9010
+host: api.vaaani.live
 info:
   contact:
     email: support@vaaani.live

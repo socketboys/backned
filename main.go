@@ -18,7 +18,7 @@ import (
 // @contact.email support@vaaani.live
 // @license.name Apache 2.0
 // @license.url http://www.apache.org/licenses/LICENSE-2.0.html
-// @host localhost:9010
+// @host api.vaaani.live
 // @schemes http
 
 func main() {
