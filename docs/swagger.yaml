@@ -63,16 +63,19 @@ definitions:
       file_link:
         example: https://www.emaple.com/file
         type: string
-      language:
+      languages:
         description: 'TODO: Add support for dubbing multiple languages at the same
           time'
-        example: hindi|telugu|marathi|bengali|tamil
-        type: string
+        example:
+        - hindi|telugu|marathi|bengali|tamil
+        items:
+          type: string
+        type: array
     required:
     - audio_length
     - email
     - file_link
-    - language
+    - languages
     type: object
   send_video.Response:
     properties:

@@ -1,10 +1,10 @@
 package send_video
 
 type AudioRequest struct {
-	FileLink    string  `json:"file_link" binding:"required,url" example:"https://www.emaple.com/file"`
-	Language    string  `json:"language" binding:"required" example:"hindi|telugu|marathi|bengali|tamil"` // TODO: Add support for dubbing multiple languages at the same time
-	EmailId     string  `json:"email" binding:"required" example:"rajatn@gmail.com"`
-	AudioLength float32 `json:"audio_length" binding:"required" example:"10"`
+	FileLink    string   `json:"file_link" binding:"required,url" example:"https://www.emaple.com/file"`
+	Languages   []string `json:"languages" binding:"required" example:"hindi|telugu|marathi|bengali|tamil"` // TODO: Add support for dubbing multiple languages at the same time
+	EmailId     string   `json:"email" binding:"required" example:"rajatn@gmail.com"`
+	AudioLength float32  `json:"audio_length" binding:"required" example:"10"`
 }
 
 type UploadHeader struct {

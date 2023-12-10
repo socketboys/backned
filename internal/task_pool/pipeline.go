@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-func startProcessing(euid uuid.UUID, link, language, emailId string, audioLength float32) {
+func startProcessing(euid uuid.UUID, link string, language []string, emailId string, audioLength float32) {
 	// TODO for streamed download for files bigger than 5 MiB
 	//DownloadFile(euid.String(), "external/input/", link)
 
@@ -45,7 +45,9 @@ func startProcessing(euid uuid.UUID, link, language, emailId string, audioLength
 
 	time.Sleep(time.Second * 15)
 
-	DeductMoney(audioLength*7.083, emailId, "subtitle/"+euid.String()+getFilePrefix(language)+".srt", "audio/"+euid.String()+getFilePrefix(language)+".wav", euid) // cost as per $5/hr
+	for _, language := range language {
+		DeductMoney(audioLength*7.083, emailId, "subtitle/"+euid.String()+getFilePrefix(language)+".srt", "audio/"+euid.String()+getFilePrefix(language)+".wav", euid) // cost as per $5/hr
+	}
 }
 
 func convertTo16kHz(path, euid, extension string) {

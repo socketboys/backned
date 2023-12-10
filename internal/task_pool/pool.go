@@ -11,7 +11,7 @@ func init() {
 	tp.Task = make(map[string]*TaskStatus)
 }
 
-func CreateTask(link, language, emailId string, audioLength float32) (string, error) {
+func CreateTask(link string, language []string, emailId string, audioLength float32) (string, error) {
 	euid, err := uuid.NewUUID()
 	if err != nil {
 		return "", err

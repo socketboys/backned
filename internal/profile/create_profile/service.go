@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"project-x/internal/postgres"
 	"project-x/internal/utils"
+	"strings"
 )
 
 // CreateProfile Create a profile on Vaaani
@@ -33,7 +34,10 @@ func CreateProfile(ctx *gin.Context) {
 
 	var profileId string
 	err = tx.QueryRow(`insert into users(name, phone, email) values ($1, $2, $3) returning profile_id`, req.Name, req.Phone, req.Email).Scan(&profileId)
-	if err != nil {
+	if strings.Trim(err.Error(), "/n") == `ERROR: duplicate key value violates unique constraint "users_pk" (SQLSTATE 23505)` {
+		utils.SendError(ctx, http.StatusBadRequest, "A profile exists for the same email id")
+		return
+	} else if err != nil {
 		utils.SendError(ctx, http.StatusInternalServerError, "profile creation txn failed "+err.Error())
 		return
 	}

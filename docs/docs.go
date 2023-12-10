@@ -297,7 +297,7 @@ const docTemplate = `{
                 "audio_length",
                 "email",
                 "file_link",
-                "language"
+                "languages"
             ],
             "properties": {
                 "audio_length": {
@@ -312,10 +312,15 @@ const docTemplate = `{
                     "type": "string",
                     "example": "https://www.emaple.com/file"
                 },
-                "language": {
+                "languages": {
                     "description": "TODO: Add support for dubbing multiple languages at the same time",
-                    "type": "string",
-                    "example": "hindi|telugu|marathi|bengali|tamil"
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "hindi|telugu|marathi|bengali|tamil"
+                    ]
                 }
             }
         },
