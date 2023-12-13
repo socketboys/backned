@@ -8,3 +8,6 @@ delete-proto:
 server:
 	go run main.go
 
+swagger-server:
+	swagger serve -F=swagger docs/swagger.yaml
+
