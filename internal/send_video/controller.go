@@ -24,7 +24,7 @@ func getLanguageEnum(string) string {
 func DubAudio(c *gin.Context) {
 	var req AudioRequest
 
-	if err := c.ShouldBind(&req); err != nil {
+	if err := c.BindJSON(&req); err != nil {
 		utils.SendError(c, http.StatusBadRequest, "You made a wrong request, please try later"+err.Error())
 		return
 	}
