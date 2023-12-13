@@ -1,0 +1,1 @@
+swagger serve -F=swagger docs/swagger.yaml
