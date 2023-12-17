@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/backned.iml" filepath="$PROJECT_DIR$/.idea/backned.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../matrix/.idea/matrix.iml" filepath="$PROJECT_DIR$/../matrix/.idea/matrix.iml" />
     </modules>
   </component>
 </project>

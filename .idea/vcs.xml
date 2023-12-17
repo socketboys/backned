@@ -2,8 +2,6 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/pipeline-cli" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/whisper_cpp" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/../matrix" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Vaani-ML" vcs="Git" />
   </component>
 </project>
