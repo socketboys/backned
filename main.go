@@ -36,15 +36,9 @@ func main() {
 	os.Setenv("DO_SPACE_NAME", "backned")
 	os.Setenv("DO_TOKEN", "dop_v1_0a2e144b571f8a682103283c60743f102584c7e7b3188565217927daa58c66fe")
 
-	//err := godotenv.Load(".env")
-	//if err != nil {
-	//	utils.Logger.Error(err.Error())
-	//	panic(err.Error())
-	//}
-
-	// TODO shift to os.Getenv()
 	postgres.InitPostgres()
 	TaskPool.InitSpace()
+	TaskPool.InitRabbit()
 	utils.InitLogger()
 
 	app := gin.Default()

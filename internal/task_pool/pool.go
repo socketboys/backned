@@ -1,7 +1,11 @@
 package TaskPool
 
 import (
+	"context"
+	"encoding/json"
+	"errors"
 	"github.com/google/uuid"
+	"github.com/wagslane/go-rabbitmq"
 	"project-x/internal/utils"
 )
 
@@ -17,18 +21,48 @@ func CreateTask(link string, language []string, emailId string, audioLength floa
 		return "", err
 	}
 
-	utils.Logger.Info("Starting pipeline")
+	utils.Logger.Info("Publishing message")
+	req, err := json.Marshal(PublishTranslationRequest{
+		Euid:        euid.String(),
+		Link:        link,
+		Language:    language,
+		EmailId:     emailId,
+		AudioLength: audioLength,
+	})
+	if err != nil {
+		utils.Logger.Error("There was an error creating byte msg for publisher")
+		return "", errors.Join(errors.New("there was an error creating byte msg for publisher"), err)
+	}
 
-	go startProcessing(euid, link, language, emailId, audioLength)
+	pconf, err := RabbitProducer.PublishWithDeferredConfirmWithContext(
+		context.Background(),
+		req,
+		[]string{"translationkey"},
+		rabbitmq.WithPublishOptionsContentType("application/json"),
+		rabbitmq.WithPublishOptionsMandatory,
+		rabbitmq.WithPublishOptionsPersistentDelivery,
+		PublisherOptions,
+	)
 
-	utils.Logger.Info("Task Created")
+	if err != nil || len(pconf) == 0 {
+		utils.Logger.Error("There was an error publishing task to translation queue")
+		return "", errors.Join(errors.New("there was an error publishing task to translation queue"), err)
+	}
+
+	utils.Logger.Info("Message published")
+
 	tp.Task[euid.String()] = &TaskStatus{
 		AudioProcessingComplete: false,
 		Err:                     "",
 		Links:                   map[string]map[string]string{},
 	}
+	utils.Logger.Info("Task Created")
 
 	return euid.String(), nil
+}
+
+func PublisherOptions(options *rabbitmq.PublishOptions) {
+	options.Exchange = "translation"
 }
 
 func DeleteTask(euid string) {
