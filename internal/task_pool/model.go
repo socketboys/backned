@@ -20,7 +20,6 @@ type DeductRequest struct {
 
 type PublishTranslationRequest struct {
 	Euid        string   `json:"euid"`
-	Link        string   `json:"link"`
 	Language    []string `json:"language"`
 	EmailId     string   `json:"email_id"`
 	AudioLength float32  `json:"audio_length"`

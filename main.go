@@ -26,8 +26,10 @@ func main() {
 
 	os.Setenv("SUPPORT_EMAIL", "support@vaaani.live")
 	os.Setenv("PASSWORD", "R@nd71kg")
+
 	os.Setenv("SMTP_HOST", "smtp.titan.email")
 	os.Setenv("SMTP_PORT", "587")
+
 	os.Setenv("DO_ACCESS_ENDPOINT", "blr1.digitaloceanspaces.com")
 	os.Setenv("DO_ACCESS_KEY", "DO00Q89RLRRGNK7AZAUH")
 	os.Setenv("DO_SECRET_ACCESS_KEY", "oaVwJJOlMlWwVTDJArVrahWsAVFbtmTxFriF7DNTLUY")
