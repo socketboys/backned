@@ -28,7 +28,8 @@ func startProcessing(euid uuid.UUID, link string, languages []string) {
 	language += languages[len(languages)-1]
 
 	cmd := exec.Command("python3", "inference.py", "--lang", language, "--audioname", euid.String()+extension)
-	cmd.Dir = "../Vaani-ML"
+	print("python3 inference.py --lang " + language + " --audioname " + euid.String() + extension)
+	cmd.Dir = "../../Vaani-ML"
 	err := cmd.Run()
 	if err != nil {
 		utils.Logger.Error(err.Error())
