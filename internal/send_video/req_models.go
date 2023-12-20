@@ -1,8 +1,8 @@
 package send_video
 
 type AudioRequest struct {
-	FileLink string `json:"file_link" binding:"required,url"`
-	Language string `json:"language" binding:"required"` // TODO: Add support for dubbing multiple languages at the same time
+	FileLink  string   `json:"file_link" binding:"required,url"`
+	Languages []string `json:"languages" binding:"required"` // TODO: Add support for dubbing multiple languages at the same time
 }
 
 type UploadHeader struct {

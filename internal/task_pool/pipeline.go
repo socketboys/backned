@@ -8,7 +8,7 @@ import (
 	"sync"
 )
 
-func startProcessing(euid uuid.UUID, link, language string) {
+func startProcessing(euid uuid.UUID, link string, languages []string) {
 	// TODO for streamed download for files bigger than 5 MiB
 	//DownloadFile(euid.String(), "external/input/", link)
 
@@ -18,8 +18,17 @@ func startProcessing(euid uuid.UUID, link, language string) {
 	DirectDownloadFile(euid.String(), path, link, extension)
 
 	utils.Logger.Info("Starting command execution")
-	cmd := exec.Command("python3", "main.py", language, "--audioname", euid.String()+extension)
-	cmd.Dir = "./pipeline-cli/langline"
+
+	language := ""
+	for i, l := range languages {
+		if i < len(languages)-1 {
+			language += l + " "
+		}
+	}
+	language += languages[len(languages)-1]
+
+	cmd := exec.Command("python3", "inference.py", "--lang", language, "--audioname", euid.String()+extension)
+	cmd.Dir = "../Vaani-ML"
 	err := cmd.Run()
 	if err != nil {
 		utils.Logger.Error(err.Error())

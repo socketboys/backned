@@ -32,7 +32,7 @@ func DubAudio(c *gin.Context) {
 
 	utils.Logger.Info(req.FileLink)
 
-	euid, err := TaskPool.CreateTask(req.FileLink, req.Language)
+	euid, err := TaskPool.CreateTask(req.FileLink, req.Languages)
 	if err != nil {
 		utils.SendError(c, http.StatusInternalServerError, "We couldn't complete this step: "+err.Error())
 		return
