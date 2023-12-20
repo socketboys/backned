@@ -2,7 +2,7 @@ package send_video
 
 type AudioRequest struct {
 	FileLink    string   `json:"file_link" example:"https://www.emaple.com/file"`
-	Languages   []string `json:"languages" example:"hindi|telugu|marathi|bengali|tamil"` // TODO: Add support for dubbing multiple languages at the same time
+	Languages   []string `json:"languages" example:"hindi, telugu, marathi, bengali, tamil"`
 	EmailId     string   `json:"email" example:"rajatn@gmail.com"`
 	AudioLength float32  `json:"audio_length" example:"10"`
 }

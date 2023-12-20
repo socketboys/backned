@@ -21,7 +21,6 @@ func startProcessing(euid uuid.UUID, link string, languages []string, emailId st
 	utils.Logger.Info("File Download complete")
 
 	utils.Logger.Info("Transformers starting")
-	// TODO publish message
 
 	utils.Logger.Info("Publishing message")
 	req, err := json.Marshal(PublishTranslationRequest{
@@ -30,6 +29,7 @@ func startProcessing(euid uuid.UUID, link string, languages []string, emailId st
 		EmailId:     emailId,
 		AudioLength: audioLength,
 	})
+
 	if err != nil {
 		utils.Logger.Error("There was an error creating byte msg for publisher", err.Error())
 	}

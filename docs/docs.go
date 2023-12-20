@@ -293,12 +293,6 @@ const docTemplate = `{
         },
         "send_video.AudioRequest": {
             "type": "object",
-            "required": [
-                "audio_length",
-                "email",
-                "file_link",
-                "languages"
-            ],
             "properties": {
                 "audio_length": {
                     "type": "number",

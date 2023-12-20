@@ -12,14 +12,14 @@ func init() {
 	tp.Task = make(map[string]*TaskStatus)
 }
 
-func CreateTask(link string, language []string, emailId string, audioLength float32) (string, error) {
+func CreateTask(link string, languages []string, emailId string, audioLength float32) (string, error) {
 	euid, err := uuid.NewUUID()
 	if err != nil {
 		return "", err
 	}
 
 	utils.Logger.Info("Starting pipeline")
-	go startProcessing(euid, link, language, emailId, audioLength)
+	go startProcessing(euid, link, languages, emailId, audioLength)
 	utils.Logger.Info("Task Created")
 
 	tp.Task[euid.String()] = &TaskStatus{

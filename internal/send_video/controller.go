@@ -29,7 +29,7 @@ func DubAudio(c *gin.Context) {
 		return
 	}
 
-	utils.Logger.Info(req.FileLink)
+	utils.Logger.Info(req.Languages[0])
 
 	euid, err := TaskPool.CreateTask(req.FileLink, req.Languages, req.EmailId, req.AudioLength)
 	if err != nil {

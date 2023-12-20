@@ -71,11 +71,6 @@ definitions:
         items:
           type: string
         type: array
-    required:
-    - audio_length
-    - email
-    - file_link
-    - languages
     type: object
   send_video.Response:
     properties:
