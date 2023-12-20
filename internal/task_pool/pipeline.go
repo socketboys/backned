@@ -130,6 +130,8 @@ func StartTaskPoolConsumer(msg rabbitmq.Delivery) (act rabbitmq.Action) {
 	}
 	wg.Wait()
 
+	UpdateTaskCompletionStatus(msgResponse.Euid, true, nil)
+
 	// Deduct money on successful processing
 	//TODO fix on consuming message
 	//for _, language := range languages {
