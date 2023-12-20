@@ -1,0 +1,13 @@
+2023-12-20 11:24:42.883 | INFO     | scripts.pipeline_class:<module>:28 - Running on linux
+2023-12-20 11:24:42.891 | INFO     | scripts.pipeline_ai:<module>:29 - Running on linux
+2023-12-20 11:24:42.892 | INFO     | scripts.pipeline_class:multi_process:196 - Multiprocessing started
+2023-12-20 11:24:42.893 | INFO     | scripts.pipeline_class:get_gender:180 - Getting gender
+2023-12-20 11:24:49.961 | INFO     | scripts.pipeline_class:get_gender:185 - female
+2023-12-20 11:24:50.008 | INFO     | scripts.pipeline_class:transcibe:148 - Starting Transcription
+2023-12-20 11:25:16.128 | INFO     | scripts.pipeline_class:transcibe:157 - Transciption Done
+2023-12-20 11:25:19.089 | INFO     | scripts.pipeline_class:process:190 - hindi process started
+2023-12-20 11:25:19.091 | INFO     | scripts.pipeline_class:__init__:33 - Class initialized
+2023-12-20 11:25:19.091 | INFO     | scripts.pipeline_class:__init__:39 - Device: cpu
+2023-12-20 11:25:19.091 | INFO     | scripts.pipeline_class:start:117 - Starting Pipeline
+2023-12-20 11:25:19.092 | INFO     | scripts.pipeline_class:translated_sub:68 - Creating Subtitles
+2023-12-20 11:25:19.092 | INFO     | scripts.pipeline_class:translated_sub:73 - Reaching out to translator function...
